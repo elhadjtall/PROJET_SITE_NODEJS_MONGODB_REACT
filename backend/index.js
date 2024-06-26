@@ -4,6 +4,25 @@ require('dotenv').config();
 const port = process.env.PORT || 3000;
 console.log("DB user name ", process.env.DB_USER);
 
+
+// Connectez-vous à la base de données "insertDB" et accédez à sa collection "haiku"
+
+    const database = client.db("insertDB");
+    const userCollections = database.collection("users");
+    const classesCollections = database.collection("classes");
+    const cartCollections = database.collection("cart");
+    const paymantCollections = database.collection("paymants");
+    const enrolledCollections = database.collection("enrolled");
+    const appliedCollections = database.collection("applied");
+    
+
+
+
+
+
+
+
+
 // MongoDB Atlas Connection 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}/?appName=Project-Site`;
