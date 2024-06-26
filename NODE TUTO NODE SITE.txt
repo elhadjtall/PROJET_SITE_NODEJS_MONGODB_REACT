@@ -1,0 +1,19 @@
+Commande : node -v
+
+On install express pour le serveur dans le backend, 
+Les commande à installer : git init pour initialiser le projet
+On peut taper la commande : git init -y
+Dans le fichier package.json, on ajoute le script 
+On creer un fichier, index.js
+On install express npm install express.
+On creer la route pour afficher la page dans un navigateur, 
+On peut le faire à travers la documentation de l'express par hello world, puis on copier le code
+et on le colle dans le fichier index.js.
+Pour cela on lie le l'application au port 3000.
+
+Ensuite on install nodemon, on utilise la commande suivante : npm i nodemon
+Puis on ajoute le script dans le fichier package.json : start : nodemon index.js
+
+
+La base de donnée utilisé est le mongoDB, 
+On creer un compte de MongoDB en ligne, 
