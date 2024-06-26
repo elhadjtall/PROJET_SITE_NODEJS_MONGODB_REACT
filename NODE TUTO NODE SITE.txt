@@ -17,3 +17,12 @@ Puis on ajoute le script dans le fichier package.json : start : nodemon index.js
 
 La base de donnée utilisé est le mongoDB, 
 On creer un compte de MongoDB en ligne, 
+
+Il faut configurer la base de donnée, pour cela il faut un projet du nom de la base, puis ajouter l'adresse IP dans Network Access, 
+Ajouter une adresse IP.
+Cliquer sur Data base, une fois créer on se connecte à la base et il faut installer une commande : npm install mongodb
+
+Une fois la connection etablie avec le code de la base de donnée, voir le code.
+On install le dotenv : npm i dotenv
+On creer un fichier .env, on ajoute les lien de la connexion à la base de donnée c'est le nom et le mot de passe
+Dans le fichier .env, il faut ajouter le numero du port voir le code.
