@@ -44,12 +44,19 @@ async function run() {
 
     // Définition des routes après la connexion à la base de données
 
+    // La requete post pour envoyer les donnée dans la base de donée
     app.post('/new-class', async (req, res) => {
       const newClass = req.body;
       const result = await classesCollections.insertOne(newClass);
-      res.json(result);
+      res.send(result);
     });
 
+    //La requête pour récuperer les données
+    app.get('/classes', async (req, res) => {
+      const query = {status: "approved"};
+      const result = await classesCollections.find(query).toArray();
+      res.send(result);
+  })
     // app.get('/classes', async (req, res) => {
     //   const newClass = req.body;
     //   const result = await classesCollections.insertOne(newClass);

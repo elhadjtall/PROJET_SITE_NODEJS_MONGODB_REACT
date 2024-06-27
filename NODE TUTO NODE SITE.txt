@@ -28,3 +28,6 @@ On creer un fichier .env, on ajoute les lien de la connexion à la base de donn�
 Dans le fichier .env, il faut ajouter le numero du port voir le code.
 Ensuite on install mongoose 
 On install postman
+Une fois l'appel de cors effectuer il faut installer cors : npm i cors 
+
+Au niveau de la base de donnée, on insert les donnée à travers postman pour identifier les Id
