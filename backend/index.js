@@ -104,6 +104,27 @@ async function run() {
       res.send(result);
    })
 
+   // update class details 'all data
+
+   app.put('/update-class/:id', async (req, res) => {
+      const id = req.parms.id;
+      const updateClass = req.body;
+      const filter = {_id: new ObjectId(id)};
+      const options = {upsert: true};
+      const updateDoc = {
+        $set: {
+          name: updateClass.name,
+          description: updateClass.description,
+          price: updateClass.price,
+          availableSeats: parseInt(updateClass.availableSeats),
+          videoLink: updateClass.videoLink,
+          status: 'approved',
+        }
+      }
+      const result = await classesCollections.updateOne(filter, updateDoc, options);
+      res.send(result);
+   })
+
     // Lancer le serveur après la connexion réussie à la base de données
     app.get('/', (req, res) => {
       res.send('Bonjour les développeurs !');
