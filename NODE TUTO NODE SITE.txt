@@ -26,3 +26,5 @@ Une fois la connection etablie avec le code de la base de donnée, voir le code.
 On install le dotenv : npm i dotenv
 On creer un fichier .env, on ajoute les lien de la connexion à la base de donnée c'est le nom et le mot de passe
 Dans le fichier .env, il faut ajouter le numero du port voir le code.
+Ensuite on install mongoose 
+On install postman
