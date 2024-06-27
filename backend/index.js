@@ -1,9 +1,16 @@
 const express = require('express');
 const app = express();
 require('dotenv').config();
+const cors = require('cors');  // Ajout de cors
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const port = process.env.PORT || 3000;
+
+// middleware
+app.use(cors());
+app.use(express.json());
+
+// DB Connection
 console.log("DB user name ", process.env.DB_USER);
 
 // MongoDB Atlas Connection 
@@ -35,18 +42,26 @@ async function run() {
     const enrolledCollections = database.collection("enrolled");
     const appliedCollections = database.collection("applied");
 
+    // Définition des routes après la connexion à la base de données
+    app.get('/classes', async (req, res) => {
+      const newClass = req.body;
+      const result = await classesCollections.insertOne(newClass);
+      res.json(result);
+    });
+
     // Lancer le serveur après la connexion réussie à la base de données
     app.get('/', (req, res) => {
-      res.send('Bonjour les développeurs !')
+      res.send('Bonjour les développeurs !');
     });
 
     app.listen(port, () => {
       console.log(`Cette application est démarrée sur le port ${port}`);
     });
 
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
   }
 }
 
-run().catch(console.dir);
+// Appel de la fonction run pour démarrer la connexion à la base de données
+run();
