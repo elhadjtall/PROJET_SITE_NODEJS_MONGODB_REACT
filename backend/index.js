@@ -43,11 +43,18 @@ async function run() {
     const appliedCollections = database.collection("applied");
 
     // Définition des routes après la connexion à la base de données
-    app.get('/classes', async (req, res) => {
+
+    app.post('/new-class', async (req, res) => {
       const newClass = req.body;
       const result = await classesCollections.insertOne(newClass);
       res.json(result);
     });
+
+    // app.get('/classes', async (req, res) => {
+    //   const newClass = req.body;
+    //   const result = await classesCollections.insertOne(newClass);
+    //   res.json(result);
+    // });
 
     // Lancer le serveur après la connexion réussie à la base de données
     app.get('/', (req, res) => {
