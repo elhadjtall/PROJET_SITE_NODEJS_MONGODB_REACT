@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const cors = require('cors');  // Ajout de cors
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const port = process.env.PORT || 3000;
 
@@ -57,11 +57,52 @@ async function run() {
       const result = await classesCollections.find(query).toArray();
       res.send(result);
   })
-    // app.get('/classes', async (req, res) => {
-    //   const newClass = req.body;
-    //   const result = await classesCollections.insertOne(newClass);
-    //   res.json(result);
-    // });
+   // Get class by instrucor email address
+   app.get('/classes/:email', async (req, res) => {
+      const email = req.param.email;
+      const query = {instructorEmail: email};
+      const result = await classesCollections.find(query).toArray();
+      res.send(result);
+   })
+
+   // mangage classes
+   app.get('/classes-manage', async (req, res) => {
+      const result = await classesCollections.find().toArray();
+      res.send(result);
+   })
+
+   // update classes
+   app.put('/change-status', async(req, res) => {
+      const id = req.body.id;
+      const status = req.body.status;
+      const reason = req.body.reason;
+      const filter = {_id: new ObjectId(id)};
+      const options = {upsert: true};
+      const updateDoc = {
+        $set: {
+          status: status,
+          reason: reason
+        }
+      }
+      const result = await classesCollections.updateOne(filter, updateDoc, options);
+      res.send(result);
+
+   })
+
+   // Get classes aproved
+   app.get('/approved-classes', async (req, res) => {
+      const query = {status: "approved"};
+      const result = await classesCollections.find(query).toArray();
+      res.send(result);
+   })
+
+   // Get the singles classes
+   app.get('/classes/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await classesCollections.findOne(query);
+      res.send(result);
+   })
 
     // Lancer le serveur après la connexion réussie à la base de données
     app.get('/', (req, res) => {
