@@ -4,8 +4,7 @@ require('dotenv').config();
 const cors = require('cors');
 const crypto = require('crypto');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const stripe = require("stripe")(process.env.PAYEMENT_SECRET)
-('sk_test_51PWdXTAJOI6Eyp04cMJT3M35uD4BG4kMAUnXHw3B1XH9b3YW0lZJhXlrLAq5fF2Wbw8e4qWxeK9BNrK2DBjPFrCW00zDn1yVll');
+const stripe = require("stripe")(process.env.PAYEMENT_SECRET);  // Correction : suppression de l'appel direct d'une chaîne de caractères
 
 const port = process.env.PORT || 3000;
 
@@ -32,9 +31,6 @@ async function run() {
   try {
     // Connect the client to the server
     await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
     // Connect to the database and collections after a successful connection
     const database = client.db("insertDB");
@@ -47,14 +43,14 @@ async function run() {
 
     // Définition des routes après la connexion à la base de données
 
-    // La requete post pour envoyer les donnée dans la base de donée
+    // La requête post pour envoyer les données dans la base de données
     app.post('/new-class', async (req, res) => {
       const newClass = req.body;
       const result = await classesCollections.insertOne(newClass);
       res.send(result);
     });
 
-    // La requête pour récuperer les données
+    // La requête pour récupérer les données
     app.get('/classes', async (req, res) => {
       const query = { status: "approved" };
       const result = await classesCollections.find(query).toArray();
@@ -69,13 +65,13 @@ async function run() {
       res.send(result);
     });
 
-    // manage classes
+    // Manage classes
     app.get('/classes-manage', async (req, res) => {
       const result = await classesCollections.find().toArray();
       res.send(result);
     });
 
-    // update classes
+    // Update classes
     app.put('/change-status', async (req, res) => {
       const id = req.body.id;
       const status = req.body.status;
@@ -92,14 +88,14 @@ async function run() {
       res.send(result);
     });
 
-    // Get classes approved
+    // Get approved classes
     app.get('/approved-classes', async (req, res) => {
       const query = { status: "approved" };
       const result = await classesCollections.find(query).toArray();
       res.send(result);
     });
 
-    // Get the single class
+    // Get single class
     app.get('/classes/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -111,7 +107,7 @@ async function run() {
       }
     });
 
-    // update class details 'all data
+    // Update class details
     app.put('/update-class/:id', async (req, res) => {
       const id = req.params.id;
       const updateClass = req.body;
@@ -130,164 +126,179 @@ async function run() {
       const result = await classesCollections.updateOne(filter, updateDoc, options);
       res.send(result);
     });
-    // Cart route 
+
+    // Cart routes
     app.post('/add-to-cart', async (req, res) => {
-       const newCartItem = req.body;
-       const result = await cartCollections.insertOne(newCartItem);
-       res.send(result);
-    })
-    
-    // Get cart Item by id
+      const newCartItem = req.body;
+      const result = await cartCollections.insertOne(newCartItem);
+      res.send(result);
+    });
+
+    // Get cart item by ID
     app.get('/cart-item/:id', async (req, res) => {
-        const id = req.params.id;
-        const mail = req.body.email;
-        const query = {
-          classId: id,
-          userMail: email
-        };
-        const projection = {classId: 1};
-        const result = await cartCollections.findOne(query, {projection: projection});
-        res.send(result);
-    })
+      const id = req.params.id;
+      const email = req.body.email;  // Correction: email au lieu de mail
+      const query = { classId: id, userMail: email };
+      const projection = { classId: 1 };
+      const result = await cartCollections.findOne(query, { projection: projection });
+      res.send(result);
+    });
 
     // Cart info by user email
-    app.get('cart/:email', async (req, res) => {
-        const email = req.params.email;
-        const query = {userMail: email};
-        const projection = {classId: 1};
-        const carts = await cartCollection.find(query, {projection: projection});
-        const classIds = carts.map((cart) => new ObjectId(cart.classId));
-        const query2 = { _id: { $in: classIds } };
-        const result = await classesCollections.find(query2).toArray();
-        res.send(result);
-    })
+    app.get('/cart/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { userMail: email };
+      const projection = { classId: 1 };
+      const carts = await cartCollections.find(query, { projection: projection }).toArray();
+      const classIds = carts.map((cart) => new ObjectId(cart.classId));
+      const query2 = { _id: { $in: classIds } };
+      const result = await classesCollections.find(query2).toArray();
+      res.send(result);
+    });
 
-    // Delete cart item by id 
-    // Suppression des cadre par l'identifiant Id
+    // Delete cart item by ID
     app.delete('/delete-cart-item/:id', async (req, res) => {
-        const id = req.params.id;
-        const query = {classId: id};
-        const result = await cartCollections.deleteOne(query);
+      const id = req.params.id;
+      const query = { classId: id };
+      const result = await cartCollections.deleteOne(query);
+      res.send(result);
+    });
+
+    // Payment routes
+    app.post('/create-payment-intent', async (req, res) => {
+      const { price } = req.body;
+      const amount = parseInt(price) * 100;
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        payment_method_types: ["card"],
+      });
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
+    });
+
+    app.post('/payment-info', async (req, res) => {
+      const paymentInfo = req.body;
+      const classesId = paymentInfo.classId.map(id => new ObjectId(id));
+      const userMail = paymentInfo.userMail;
+      const singleClassId = req.query.classId;
+
+      let query;
+      if (singleClassId) {
+        query = { classId: singleClassId, userMail: userMail };
+      } else {
+        query = { classId: { $in: classesId } };
+      }
+
+      const classesQuery = { _id: { $in: classesId } };
+      const classes = await classesCollections.find(classesQuery).toArray();
+      const newEnrolledData = {
+        userMail: userMail,
+        classId: classesId,
+        transactionId: paymentInfo.transactionId
+      };
+
+      const updateDoc = {
+        $set: {
+          totalEnrolled: classes.reduce((total, current) => total + current.totalEnrolled, 0) + 1,
+          availableSeats: classes.reduce((total, current) => total + current.availableSeats, 0) - 1,
+        }
+      };
+
+      const updateResult = await classesCollections.updateMany(classesQuery, updateDoc, { upsert: true });
+      const enrolledResult = await enrolledCollections.insertOne(newEnrolledData);
+      const deleteResult = await cartCollections.deleteMany(query);
+      const paymentResult = await paymentCollections.insertOne(paymentInfo);
+
+      res.send({ paymentResult, deleteResult, enrolledResult, updateResult });
+    });
+
+    // Get payment history
+    app.get('/payment-history/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { userMail: email };
+      const result = await paymentCollections.find(query).sort({ date: -1 }).toArray();
+      res.send(result);
+    });
+
+    // Payment history length
+    app.get('/payment-history-length/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { userMail: email };
+      const total = await paymentCollections.countDocuments(query);
+      res.send({ total });
+    });
+
+    // Enrollment routes
+    app.get('/popular_classes', async (req, res) => {
+      const result = await classesCollections.find().sort({ totalEnrolled: -1 }).limit(6).toArray();
+      res.send(result);
+    });
+
+    app.get('/popular-instructors', async (req, res) => {
+      const pipeline = [
+        {
+          $group: {
+            _id: "$instructorEmail",
+            totalEnrolled: { $sum: "$totalEnrolled" }
+          }
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "_id",
+            foreignField: "email",
+            as: "instructor"
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            instructor: { $arrayElemAt: ["$instructor", 0] },
+            totalEnrolled: 1
+          }
+        },
+        {
+          $sort: { totalEnrolled: -1 }
+        },
+        {
+          $limit: 6
+        }
+      ];
+
+      try {
+        const result = await classesCollections.aggregate(pipeline).toArray();  // Correction : classesCollections au lieu de classesCollection
         res.send(result);
+      } catch (err) {
+        console.error(err);
+        res.status(500).send({ message: "Server error" });
+      }
+    });
+
+    // Admin
+    app.get('/admin-stats', async (req, res) => {
+      const approvedClasses = (await ((await classesCollections.find({status: 'approved'})).toArray())).length;
+      const pendingClasses = ((await classesCollection.find({status: 'pending'})).toArray()).length;
+      const instructors = ((await usersCollection.find({role: 'instructor'})).toArray()).length;
+      const totalClasses = (await classesCollections.find()).toArray().length;
+      const totalEnrolled = (await enrolledCollections.find()).toArray().length;
+      
+      const result = {
+        approvedClasses,
+        pendingClasses,
+        instructors,
+        totalClasses,
+        totalEnrolled
+      }
+
+      res.send(result);
     })
 
-    // PAYEMENT requête post pour la creation d'un paiement
-    // Pour faire cette reqête il faut d'abord voir la documentation de stripe et ensuite voir les data.jon
-    app.post('/create-payment-intent', async (req, res) => {
-        const { price } = req.body;
-        const amount = parseInt(price) * 100;
-
-        const paymentIntent = await stripe.paymentIntents.create({
-          amount:amount,
-          currency: "usd",
-          payment_method_types: ["card"],
-        });
-        res.send({
-          clientSecret: paymentIntent.client_secret,
-        });
-      });
-
-      // Requête post pour les information du payement 
-      app.post('/payment-info', async (req, res) => {
-        const paymentInfo = req.body;
-        const classId = paymentInfo.classId;
-        const userMail = paymentInfo.userMail;
-        const singleClassId = req.query.classId;
-         let query;
-         if(singleClassId){
-            query = { classId: singleClassId, userMail: userMail };
-         }else{
-            query = { classId: { Sin: classesId }};
-         }
-
-         const classesQuery = {_id: {Sin : classesId.map( id => new ObjectId(id))}};
-         const classes = await classesCollections.find(classesQuery).toArray();
-         const newEnrolledData = {
-           userEmail: userEmail,
-           classId: singleClassId.map(id => new ObjectId(id)),
-           transactionId: paymentInfo.transactionId
-         };
-
-         const updateDoc = {
-           $set: {
-            totalEnrolied: classes.reduce((total, current) => total + current.totalEnrolled, 0) + 1 || 0,
-            availableSeats: classes.reduce((total, current) => total + current.availableSeats, 0) - 1 || 0,
-         }
-       };
-
-       const updateResult = await classesCollections.updateMany(classesQuery, updateDoc, {upsert: true});
-       const enrolledResult = await enrolledCollections.insertOne(newEnrolledData);
-       const deleteResult = await cartCollections.deleteMany(query);
-       const paymentResult = await paymentCollections.insertOne(paymentInfo);
-       
-
-       res.send({paymentResult, deleteResult, enrolledResult, updateResult})
-      });
-
-      // Get payment history
-      // La requete pour recuperer les historiques des payements effecuter
-      app.get('/payment-history/:email', async (req, res) => {
-        const email = req.params.email;
-        const query = { userEmail: email};
-        const result = await paymentCollections.find(query).sort({date: -1}).toArray();
-        res.send(result);
-      })
-
-      // payment history length
-      // La longueur de l'history du payement
-      app.get('/payment-history-length/:email', async (req, res) => {
-        const email = req.params.email;
-        const query = { userEmail: email};
-        const total = await paymentCollections.countDocuments(query);
-        res.send({total});
-      });
-
-      // Enrollment Routes
-      app.get('/popular_classes', async (req, res) => {
-        const result = await classesCollections.find().sort({totalEnrolled: -1}).limit(6).toArray();
-        res.send(result);
-      })
-
-      app.get('/popular-instructors', async (req, res) => {
-        const pipeline = [
-          {
-            $group: {
-              _id: "$instructorEmail",
-              totalEnrolled: { $sum: "$totalEnrolled" }
-            }
-          },
-          {
-            $lookup: {
-              from: "users",
-              localField: "_id",
-              foreignField: "email",
-              as: "instructor"
-            }
-          },
-          {
-            $project: {
-              _id: 0,
-              instructor: { $arrayElemAt: ["$instructor", 0] },
-              totalEnrolled: 1
-            }
-          },
-          {
-            $sort: { totalEnrolled: -1 }
-          },
-          {
-            $limit: 6
-          }
-        ];
-      
-        try {
-          const result = await classesCollection.aggregate(pipeline).toArray();
-          res.send(result);
-        } catch (err) {
-          console.error(err);
-          res.status(500).send({ message: "Server error" });
-        }
-      });      
-
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
 
     // Middleware pour ajouter un nonce et définir la CSP
