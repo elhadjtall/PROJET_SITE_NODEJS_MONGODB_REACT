@@ -31,3 +31,12 @@ On install postman
 Une fois l'appel de cors effectuer il faut installer cors : npm i cors 
 
 Au niveau de la base de donnée, on insert les donnée à travers postman pour identifier les Id
+Nous avons effectuer plusieurs requêtes pour la base de donnée 
+
+
+
+Les outils utilisé : MongoDB, postman, nodemon, dotenv, stripe.com 
+
+On utilise stripe le service de paiement en ligne
+Pour cela, on se connecter et on creer un nouveau compte
+Pour utiliser stripe, on install la ligne de commande suivante : npm install --save stripe

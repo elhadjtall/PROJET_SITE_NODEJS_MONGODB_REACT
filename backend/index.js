@@ -4,6 +4,8 @@ require('dotenv').config();
 const cors = require('cors');
 const crypto = require('crypto');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const stripe = require("stripe")(process.env.PAYEMENT_SECRET)
+('sk_test_51PWdXTAJOI6Eyp04cMJT3M35uD4BG4kMAUnXHw3B1XH9b3YW0lZJhXlrLAq5fF2Wbw8e4qWxeK9BNrK2DBjPFrCW00zDn1yVll');
 
 const port = process.env.PORT || 3000;
 
@@ -169,8 +171,21 @@ async function run() {
         res.send(result);
     })
 
+    // PAYEMENT requête à retenir
+    // Pour faire cette reqête il faut d'abord voir la documentation de stripe et ensuite voir les data.jon
+    app.post('/create-payment-intent', async (req, res) => {
+        const { price } = req.body;
+        const amount = parseInt(price) * 100;
 
-
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount:amount,
+          currency: "usd",
+          payment_method_types: ["card"],
+        });
+        res.send({
+          clientSecret: paymentIntent.client_secret,
+        });
+      });
 
 
 
