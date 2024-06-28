@@ -171,7 +171,7 @@ async function run() {
         res.send(result);
     })
 
-    // PAYEMENT requête à retenir
+    // PAYEMENT requête post pour la creation d'un paiement
     // Pour faire cette reqête il faut d'abord voir la documentation de stripe et ensuite voir les data.jon
     app.post('/create-payment-intent', async (req, res) => {
         const { price } = req.body;
@@ -186,6 +186,52 @@ async function run() {
           clientSecret: paymentIntent.client_secret,
         });
       });
+
+      // Requête post pour les information du payement 
+      app.post('/payment-info', async (req, res) => {
+        const paymentInfo = req.body;
+        const classId = paymentInfo.classId;
+        const userMail = paymentInfo.userMail;
+        const singleClassId = req.query.classId;
+         let query;
+         if(singleClassId){
+            query = { classId: singleClassId, userMail: userMail };
+         }else{
+            query = { classId: { Sin: classesId }};
+         }
+
+         const classesQuery = {_id: {Sin : classesId.map( id => new ObjectId(id))}};
+         const classes = await classesCollections.find(classesQuery).toArray();
+         const newEnrolledData = {
+           userEmail: userEmail,
+           classId: singleClassId.map(id => new ObjectId(id)),
+           transactionId: paymentInfo.transactionId
+         };
+
+         const updateDoc = {
+           $set: {
+            totalEnrolied: classes.reduce((total, current) => total + current.totalEnrolled, 0) + 1 || 0,
+            availableSeats: classes.reduce((total, current) => total + current.availableSeats, 0) - 1 || 0,
+         }
+       };
+
+       const updateResult = await classesCollections.updateMany(classesQuery, updateDoc, {upsert: true});
+       const enrolledResult = await enrolledCollections.insertOne(newEnrolledData);
+       const deleteResult = await cartCollections.deleteMany(query);
+       const paymentResult = await paymentCollections.insertOne(paymentInfo);
+       
+
+       res.send({paymentResult, deleteResult, enrolledResult, updateResult})
+      });
+
+      // Get payment history
+      // La requete pour recuperer les historiques des payements effecuter
+      app.get('/payment-history/:email', async (req, res) => {
+        const email = req.params.email;
+        const query = { userEmail: email};
+        const result = await paymentCollections.find(query).sort({date: -1}).toArray();
+        res.send(result);
+      })
 
 
 
