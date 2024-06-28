@@ -233,6 +233,60 @@ async function run() {
         res.send(result);
       })
 
+      // payment history length
+      // La longueur de l'history du payement
+      app.get('/payment-history-length/:email', async (req, res) => {
+        const email = req.params.email;
+        const query = { userEmail: email};
+        const total = await paymentCollections.countDocuments(query);
+        res.send({total});
+      });
+
+      // Enrollment Routes
+      app.get('/popular_classes', async (req, res) => {
+        const result = await classesCollections.find().sort({totalEnrolled: -1}).limit(6).toArray();
+        res.send(result);
+      })
+
+      app.get('/popular-instructors', async (req, res) => {
+        const pipeline = [
+          {
+            $group: {
+              _id: "$instructorEmail",
+              totalEnrolled: { $sum: "$totalEnrolled" }
+            }
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "_id",
+              foreignField: "email",
+              as: "instructor"
+            }
+          },
+          {
+            $project: {
+              _id: 0,
+              instructor: { $arrayElemAt: ["$instructor", 0] },
+              totalEnrolled: 1
+            }
+          },
+          {
+            $sort: { totalEnrolled: -1 }
+          },
+          {
+            $limit: 6
+          }
+        ];
+      
+        try {
+          const result = await classesCollection.aggregate(pipeline).toArray();
+          res.send(result);
+        } catch (err) {
+          console.error(err);
+          res.status(500).send({ message: "Server error" });
+        }
+      });      
 
 
 
