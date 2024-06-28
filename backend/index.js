@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const cors = require('cors');
+const crypto = require('crypto');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const port = process.env.PORT || 3000;
@@ -59,7 +60,7 @@ async function run() {
     });
 
     // Get class by instructor email address
-    app.get('/classes/:email', async (req, res) => {
+    app.get('/classes-by-email/:email', async (req, res) => {
       const email = req.params.email;
       const query = { instructorEmail: email };
       const result = await classesCollections.find(query).toArray();
@@ -101,7 +102,11 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await classesCollections.findOne(query);
-      res.send(result);
+      if (result) {
+        res.send(result);
+      } else {
+        res.status(404).send({ message: 'Class not found' });
+      }
     });
 
     // update class details 'all data
@@ -124,9 +129,27 @@ async function run() {
       res.send(result);
     });
 
+    // Middleware pour ajouter un nonce et définir la CSP
+    app.use((req, res, next) => {
+      res.locals.nonce = crypto.randomBytes(16).toString('base64');
+      res.setHeader("Content-Security-Policy", `default-src 'none'; script-src 'nonce-${res.locals.nonce}'`);
+      next();
+    });
+
     // Lancer le serveur après la connexion réussie à la base de données
     app.get('/', (req, res) => {
-      res.send('Bonjour les développeurs !');
+      res.send(`
+        <html>
+          <head>
+            <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${res.locals.nonce}'">
+          </head>
+          <body>
+            <script nonce="${res.locals.nonce}">
+              console.log('Bonjour les développeurs !');
+            </script>
+          </body>
+        </html>
+      `);
     });
 
     app.listen(port, () => {
