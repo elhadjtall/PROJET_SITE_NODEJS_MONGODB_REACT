@@ -4,6 +4,7 @@ require('dotenv').config();
 const cors = require('cors');
 const crypto = require('crypto');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { pipeline } = require('stream');
 const stripe = require("stripe")(process.env.PAYEMENT_SECRET);  // Correction : suppression de l'appel direct d'une chaîne de caractères
 
 const port = process.env.PORT || 3000;
@@ -294,6 +295,48 @@ async function run() {
       }
 
       res.send(result);
+    })
+
+    // Get  ll instructor
+    app.get('/instructors', async (req, res) => {
+        const result = await usersCollections.find({role: 'instructor'}).toArray();
+        res.send(result);
+    })
+
+    app.get('/enrolled-classes/:email', async (req, res) => {
+        const email = req.params.email;
+        const query = { userMail: email};
+        const pipeline = [
+          {
+            $match: query
+          },
+          {
+            $lookup: {
+              from: "classes",
+              localField: "classesId",
+              foreignField: "_id",
+              as: "classes"
+            }
+          }, {
+            $urwind: "$classes"
+          }, {
+            $lookup: {
+              from: "users",
+              localField: "classes.instructorEmail",
+              foreignField: "email",
+              as: "instructor"
+            }
+          }, {
+            $project: {
+              _id: 0,
+              instructor: { $arrayElemAt: ["$instructor", 0] 
+              },
+              classes: 1
+            }
+          }
+        ];
+        const result = await enrolledCollection.aggregate(pipeline).toArray();
+        res.send(result);
     })
 
     // Send a ping to confirm a successful connection
