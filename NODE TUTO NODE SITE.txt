@@ -49,3 +49,4 @@ facilitant ainsi la gestion de l'authentification et de l'autorisation de maniè
 
 Ensuite on install node crypto randombytes, pour cela on tape dans le terminal : node et ensuite : require('crypto').randomBytes(64).toString('hex')
 On copie la clé et on le met dans le dossier .env avec un nom variable,
+Une fois qu'on termine les code, au niveau de la réquête de user/email et delete email, on ajoute verifyJWT
