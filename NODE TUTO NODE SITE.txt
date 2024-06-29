@@ -40,3 +40,12 @@ Les outils utilisé : MongoDB, postman, nodemon, dotenv, stripe.com
 On utilise stripe le service de paiement en ligne
 Pour cela, on se connecter et on creer un nouveau compte
 Pour utiliser stripe, on install la ligne de commande suivante : npm install --save stripe
+
+On as utiliser les requêtes pour la gestion des données à savoir : creation des utilisateur, envoie et recuperation des données.
+On peut aussi visite le site jwt 
+Pour cela on install le jwttoken : npm i jsonwebtoken
+La commande npm i jsonwebtoken installe la bibliothèque jsonwebtoken nécessaire pour travailler avec des JWT dans votre projet Node.js, 
+facilitant ainsi la gestion de l'authentification et de l'autorisation de manière sécurisée et standardisée.
+
+Ensuite on install node crypto randombytes, pour cela on tape dans le terminal : node et ensuite : require('crypto').randomBytes(64).toString('hex')
+On copie la clé et on le met dans le dossier .env avec un nom variable,

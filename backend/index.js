@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const { pipeline } = require('stream');
 const stripe = require("stripe")(process.env.PAYEMENT_SECRET);  // Correction : suppression de l'appel direct d'une chaîne de caractères
+const jwt = require('jsonwebtoken');
 
 const port = process.env.PORT || 3000;
 
@@ -41,6 +42,16 @@ async function run() {
     const paymentCollections = database.collection("payments");
     const enrolledCollections = database.collection("enrolled");
     const appliedCollections = database.collection("applied");
+
+
+    //Get le token
+    app.post('/api/set-token', async(req, res) =>{
+        const user = req.body;
+        const token = jwt.sign(user, process.env.ASSESS_SECRET, {
+          expiresIn: '24h'
+        })
+        res.send({token});
+    })
 
     // Routes a users
     // Routes pour creer un nouvel utilisateur
