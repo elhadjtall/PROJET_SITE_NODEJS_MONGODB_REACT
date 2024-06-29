@@ -42,6 +42,72 @@ async function run() {
     const enrolledCollections = database.collection("enrolled");
     const appliedCollections = database.collection("applied");
 
+    // Routes a users
+    // Routes pour creer un nouvel utilisateur
+    app.post('/new-user', async(req, res) => {
+        const newUser = req.body;
+        const result = await userCollections.insertOne(newUser);
+        res.send(result);
+    })
+
+    // Get all users
+    // Requete pour recuperer tous les utilisateurs
+    app.get('/users', async(req, res) => {
+        const result = await userCollections.find().toArray();
+        res.send(result);
+    })
+
+    // get user by id
+    // Requete pour recuperer un seul utilisateur
+    app.get('/users/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await userCollections.findOne(query);
+        res.send(result);
+    })
+
+    // get user by email address
+    // Requete pour recuperer un seul utilisateur par son email
+    app.get('/user/:email', async(req, res) => {
+        const email = req.params.email;
+        const query = { email: email };
+        const result = await userCollections.findOne(query);
+        res.send(result);
+    })
+
+    // Delete user
+    // Requete pour supprimer un utilisateur
+    app.delete('/delete-user/:id', async(req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await userCollections.deleteOne(query);
+        res.send(result);
+    })
+
+    // Update user
+    // Requete pour modifier un utilisateur
+    // Ici on met a jour les informations de la base de donnée du data en utilisant l'id et les informations qui doit fournir l'utilisateur
+    app.put('/update-user/:id', async(req, res) => {
+        const id = req.params.id;
+        const updateUser = req.body;
+        const filter = {_id: new ObjectId(id)};
+        const options = { upsert: true };
+        const updateDoc = {
+            $set: {
+                name: updateUser.name,
+                email: updateUser.email,
+                role: updateUser.options,
+                address: updateUser.address,
+                about: updateUser.about,
+                photoUrl: updateUser.photoUrl,
+                skills: updateUser.skills ? updateUser.skills : null,
+
+            }
+            }
+        const result = await userCollections.updateOne(filter, updateDoc, options);
+        res.send(result);
+    })
+
     // Définition des routes après la connexion à la base de données
 
     // La requête post pour envoyer les données dans la base de données
@@ -336,6 +402,18 @@ async function run() {
           }
         ];
         const result = await enrolledCollection.aggregate(pipeline).toArray();
+        res.send(result);
+    })
+
+    // Applied for instructor
+    app.post('/ass-instructor', async (req, res) => {
+        const data = req.body;
+        const result = await appliedCollections.insertOne(data);
+        res.send(result);
+    })
+    app.get('/applied-instructors/:email', async (req, res) => {
+        const email = req.params.email;
+        const result = await appliedCollections.findOne({email: email});
         res.send(result);
     })
 
