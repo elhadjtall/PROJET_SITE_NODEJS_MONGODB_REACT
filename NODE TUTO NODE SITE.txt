@@ -58,3 +58,7 @@ Dans le site de tailwindcss, cliquer Gedstart, frameworks guides, Vite
 On install la commande : npm create vite@latest ./ dans le fichier front,
 framework : React 
 select a variant: JavaScript
+On install : npm install
+On redemare le serveur : nom run dev 
+Puis on install le tailwindcss : npm install -D tailwindcss postcss autoprefixer
+Et on install la commande suivante : 
