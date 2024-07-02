@@ -61,4 +61,27 @@ select a variant: JavaScript
 On install : npm install
 On redemare le serveur : nom run dev 
 Puis on install le tailwindcss : npm install -D tailwindcss postcss autoprefixer
-Et on install la commande suivante : 
+Et on install la commande suivante : npx tailwindcss init -p
+Il creer un fichier tailwindcss
+On se rend dans le dossier src/index.css on supprime tout et on ajoute ce code : @tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+Dans le fichier frontend, on install cette commande de react router : npm install react-router-dom localforage match-sorter sort-by
+
+
+Une fois l'installation terminée, on import le code suivant dans le fichier main.js : import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+
+Ensuite on ajoute le code et le RouterProvider voir le code main.js
+
+On supprime le fichier app.js
+
+On dois utiliser une couleur pour le site, pour cela on copier le code dans son github (colors: {
+        'primary': '#b68bdcb1',
+        'secondary': '#2E4CFF',
+      })
+pour le coller dans le tailwindcss
