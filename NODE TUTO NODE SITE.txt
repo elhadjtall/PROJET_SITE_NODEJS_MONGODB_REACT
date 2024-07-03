@@ -85,3 +85,10 @@ On dois utiliser une couleur pour le site, pour cela on copier le code dans son 
         'secondary': '#2E4CFF',
       })
 pour le coller dans le tailwindcss
+
+On as telecharger le dossier du frontend de son github et on a supprimer les fichier dejà pour ajouter ces fichier, 
+
+On creer un dossier route et un fichier route.js
+On install une extension, ES7+react
+Dans le fichier main.js, on suprime le path et le RouterProvider 
+On 
