@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
 
 const navLinks = [
     {
@@ -16,12 +18,73 @@ const navLinks = [
     }
 ];
 
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#ff0000',
+        },
+        secondary: {
+            main: '#00ff00',
+        },
+    },
+});
+
 const Navbar = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isHome, setIsHome] = useState(false);
+    const [isLogin, setIsLogin] = useState(false);
+    const [scrollPosition, setScrollPosition] = useState(0);
+    const [isFixed, setIsFixed] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(false);
     const [navBg, setNavBg] = useState('bg-[#15151580]');
-    const user = false;
+
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    useEffect(() => {
+        const darkClass = 'dark';
+        const root = window.document.documentElement;
+        if (isDarkMode) {
+            root.classList.add(darkClass);
+        } else {
+            root.classList.remove(darkClass);
+        }
+    }, [isDarkMode]);
+
+    useEffect(() => {
+        setIsHome(location.pathname === '/');
+        setIsLogin(location.pathname === '/login');
+        setIsFixed(location.pathname === '/register' || location.pathname === '/login');
+    }, [location]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentPosition = window.pageYOffset;
+            setScrollPosition(currentPosition);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => 
+            window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    useEffect(() => {
+        if (scrollPosition > 100) {
+            if (isHome) {
+                setNavBg('bg-white backdrop-filter backdrop-blur-xl bg-opacity-0 dark:text-white text-black');
+            } else {
+                setNavBg('bg-white dark:bg-black dark:text-white text-black');
+            } 
+        } else {
+            setNavBg(`${isHome || location.pathname === '/' ? 'bg-transparent' : 'bg-white dark:bg-black'} dark:text-white text-white`);
+        }
+    }, [scrollPosition, isHome, location.pathname]);
 
     return (
-        <nav>
+        <nav className="">
             <div className='lg:w-[80%] mx-auto sm:px-4 lg:px-6'>
                 <div className='px-4 py-4 flex items-center justify-between'>
                     {/* Logo container on ici c'est pour le logo */}
@@ -39,7 +102,7 @@ const Navbar = () => {
                                     <li key={link.route}>
                                         <NavLink
                                             to={link.route}
-                                            className={({ isActive, isPending }) =>
+                                            className={({ isActive }) =>
                                                 `font-bold ${isActive ? 'text-secondary' : `${navBg.includes('bg-transparent') ? 'text-white' : 'text-black dark:text-white'}`} hover:text-secondary duration-300`
                                             }
                                         >
@@ -48,13 +111,25 @@ const Navbar = () => {
                                     </li>
                                 ))}
                                 {/* based on users */}
-                                <li><NavLink to="/login"
-                                    className={({ isActive, isPending }) =>
-                                    `font-bold ${isActive ? 'text-secondary' : `${navBg.includes('bg-transparent') ? 'text-white' : 'text-black dark:text-white'}`} hover:text-secondary duration-300`
-                                }>Login</NavLink></li>
+                                <li>
+                                    <NavLink 
+                                        to="/login"
+                                        className={({ isActive }) =>
+                                            `font-bold ${isActive ? 'text-secondary' : `${navBg.includes('bg-transparent') ? 'text-white' : 'text-black dark:text-white'}`} hover:text-secondary duration-300`
+                                        }
+                                    >
+                                        Login
+                                    </NavLink>
+                                </li>
 
-                                {/* toogle */}
-                                <li>Blanc/Sombre</li>
+                                {/* toggle */}
+                                <li>
+                                    <ThemeProvider theme={theme}>
+                                        <div className='flex flex-col justify-center items-center'>
+                                            <Switch onChange={() => setIsDarkMode(!isDarkMode)} />
+                                        </div>
+                                    </ThemeProvider>
+                                </li>
                             </ul>
                         </div>
                     </div>
