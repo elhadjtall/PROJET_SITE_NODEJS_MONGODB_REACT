@@ -93,3 +93,8 @@ On install une extension, ES7+react
 Dans le fichier main.js, on suprime le path et le RouterProvider
 
 On as creer des dossier et des fichiers, Home, NavLayout et Navbar
+
+Pour chaque page on creer un dossier et les fichier
+Pour la couleur du site pour mettre en blanc et sombre on utilise un site mui.com
+
+Explication des fonction css : justify-between permet d'alargir les espaces des écritures

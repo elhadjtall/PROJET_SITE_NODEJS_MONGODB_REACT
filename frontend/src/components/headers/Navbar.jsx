@@ -18,6 +18,7 @@ const navLinks = [
 
 const Navbar = () => {
     const [navBg, setNavBg] = useState('bg-[#15151580]');
+    const user = false;
 
     return (
         <nav>
@@ -46,6 +47,14 @@ const Navbar = () => {
                                         </NavLink>
                                     </li>
                                 ))}
+                                {/* based on users */}
+                                <li><NavLink to="/login"
+                                    className={({ isActive, isPending }) =>
+                                    `font-bold ${isActive ? 'text-secondary' : `${navBg.includes('bg-transparent') ? 'text-white' : 'text-black dark:text-white'}`} hover:text-secondary duration-300`
+                                }>Login</NavLink></li>
+
+                                {/* toogle */}
+                                <li>Blanc/Sombre</li>
                             </ul>
                         </div>
                     </div>
