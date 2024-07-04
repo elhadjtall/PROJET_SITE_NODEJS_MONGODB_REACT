@@ -39,6 +39,7 @@ const Navbar = () => {
     const [isFixed, setIsFixed] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [navBg, setNavBg] = useState('bg-[#15151580]');
+    const [user, setUser] = useState(false);
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -110,19 +111,36 @@ const Navbar = () => {
                                         </NavLink>
                                     </li>
                                 ))}
-                                {/* based on users */}
-                                <li>
-                                    <NavLink 
-                                        to="/login"
-                                        className={({ isActive }) =>
-                                            `font-bold ${isActive ? 'text-secondary' : `${navBg.includes('bg-transparent') ? 'text-white' : 'text-black dark:text-white'}`} hover:text-secondary duration-300`
-                                        }
-                                    >
-                                        Login
-                                    </NavLink>
-                                </li>
-
-                                {/* toggle */}
+                                {/* based on users */}{
+                                    user ? null : isLogin ? 
+                                    (
+                                        <li>
+                                            <NavLink 
+                                                to="/login"
+                                                className={({ isActive }) =>
+                                                    `font-bold ${isActive ? 'text-secondary' : `${navBg.includes('bg-transparent') ? 
+                                                    'text-white' : 'text-black dark:text-white'}`} hover:text-secondary duration-300`
+                                                }
+                                            >
+                                                Register
+                                            </NavLink>
+                                        </li>
+                                    ) : 
+                                    (
+                                        <li>
+                                            <NavLink 
+                                                to="/login"
+                                                className={({ isActive }) =>
+                                                    `font-bold ${isActive ? 'text-secondary' : `${navBg.includes('bg-transparent') ? 
+                                                    'text-white' : 'text-black dark:text-white'}`} hover:text-secondary duration-300`
+                                                }
+                                            >
+                                                Login
+                                            </NavLink>
+                                        </li>
+                                    )
+                                }
+                                {/* color toggle */}
                                 <li>
                                     <ThemeProvider theme={theme}>
                                         <div className='flex flex-col justify-center items-center'>
