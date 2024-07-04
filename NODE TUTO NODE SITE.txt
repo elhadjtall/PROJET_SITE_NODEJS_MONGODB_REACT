@@ -90,4 +90,6 @@ On as telecharger le dossier du frontend de son github et on a supprimer les fic
 
 On creer un dossier route et un fichier route.jsx
 On install une extension, ES7+react
-Dans le fichier main.js, on suprime le path et le RouterProvider 
+Dans le fichier main.js, on suprime le path et le RouterProvider
+
+On as creer des dossier et des fichiers, Home, NavLayout et Navbar
