@@ -38,8 +38,8 @@ const Navbar = () => {
     const [scrollPosition, setScrollPosition] = useState(0);
     const [isFixed, setIsFixed] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
-    const [navBg, setNavBg] = useState('bg-[#15151580]');
-    const [user, setUser] = useState(false);
+    const [navBg, setNavBg] = useState('bg-[#15151580]'); 
+    const user = false; // TODO: check if user is logged in
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -88,14 +88,14 @@ const Navbar = () => {
         <nav className="">
             <div className='lg:w-[80%] mx-auto sm:px-4 lg:px-6'>
                 <div className='px-4 py-4 flex items-center justify-between'>
-                    {/* Logo container on ici c'est pour le logo */}
+                    {/* Logo container */}
                     <div>
                         <h1 className='text-2xl inline-flex gap-3 items-center font-bold'>
                             IntraConnect <img src="/yoga-logo.png" alt="" className='w-8 h-8' />
                         </h1>
                         <p className='font-bold text-[13px] tracking-[8px]'>Explore Intranet</p>
                     </div>
-                    {/* mobile menu icons */}
+                    {/* Navigation links */}
                     <div className='hidden md:block text-black dark:text-white'>
                         <div className='flex'>
                             <ul className='ml-10 flex items-center space-x-4 pr-4'>
@@ -111,12 +111,12 @@ const Navbar = () => {
                                         </NavLink>
                                     </li>
                                 ))}
-                                {/* based on users */}{
-                                    user ? null : isLogin ? 
-                                    (
+                                {/* Inscription */}
+                                {user ? null : (
+                                    isLogin ? (
                                         <li>
                                             <NavLink 
-                                                to="/login"
+                                                to="/register"
                                                 className={({ isActive }) =>
                                                     `font-bold ${isActive ? 'text-secondary' : `${navBg.includes('bg-transparent') ? 
                                                     'text-white' : 'text-black dark:text-white'}`} hover:text-secondary duration-300`
@@ -125,8 +125,7 @@ const Navbar = () => {
                                                 Register
                                             </NavLink>
                                         </li>
-                                    ) : 
-                                    (
+                                    ) : (
                                         <li>
                                             <NavLink 
                                                 to="/login"
@@ -139,8 +138,21 @@ const Navbar = () => {
                                             </NavLink>
                                         </li>
                                     )
-                                }
-                                {/* color toggle */}
+                                )}
+                                {/* Dashboard */}
+                                {user && (
+                                    <li>
+                                        <NavLink 
+                                            to='/dashboard' 
+                                            className={({ isActive }) =>
+                                                `font-bold ${isActive ? 'text-secondary' : `${navBg.includes('bg-transparent') ? 'text-white' : 'text-black dark:text-white'}`} hover:text-secondary duration-300`
+                                            }
+                                        >
+                                            Dashboard
+                                        </NavLink>
+                                    </li>
+                                )}
+                                {/* Toggle couleur */}
                                 <li>
                                     <ThemeProvider theme={theme}>
                                         <div className='flex flex-col justify-center items-center'>
