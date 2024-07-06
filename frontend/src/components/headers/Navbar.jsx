@@ -5,6 +5,8 @@ import Switch from '@mui/material/Switch';
 
 import photoURL from '../../assets/home/girl.jpg';  // L'importation de la photo de profil dashboard de l'utilisateur
 
+import {FaBars} from 'react-icons/fa';  // L'import pour les icons
+
 const navLinks = [
     {
         name: "Home",
@@ -92,6 +94,7 @@ const Navbar = () => {
 
     return (
         <nav className="">
+            {/* le code du navbar */}
             <div className='lg:w-[80%] mx-auto sm:px-4 lg:px-6'>
                 <div className='px-4 py-4 flex items-center justify-between'>
                     {/* Logo container */}
@@ -100,6 +103,13 @@ const Navbar = () => {
                             IntraConnect <img src="/yoga-logo.png" alt="" className='w-8 h-8' />
                         </h1>
                         <p className='font-bold text-[13px] tracking-[8px]'>Explore Intranet</p>
+                    </div>
+
+                    {/* mobile menu icons permet de basculer le menu en version mobile */}
+                    <div className='lg:hidden flex items-center'>
+                        <button type='button' onClick={toggleMobileMenu} className='text-gray-300 hover:text-white focus:outline-none'>
+                            <FaBars className='h-6 w-6 hover:text-primary' />
+                        </button>
                     </div>
                     {/* Navigation links */}
                     <div className='hidden md:block text-black dark:text-white'>
@@ -165,7 +175,7 @@ const Navbar = () => {
                                     </li>
                                 }
                                 {
-                                    user && <li><NavLink onClick={handelLogout} className={'font-bold px-3 py-2 bg-secondary text-white'}>Logout</NavLink></li>
+                                    user && <li><NavLink onClick={handelLogout} className={'font-bold px-3 py-2 bg-secondary text-white rounded-l'}>Logout</NavLink></li>
                                 }
                                 {/* Toggle couleur */}
                                 <li>
