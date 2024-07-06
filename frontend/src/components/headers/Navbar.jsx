@@ -3,6 +3,8 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 
+import photoURL from '../../assets/home/girl.jpg';  // L'importation de la photo de profil dashboard de l'utilisateur
+
 const navLinks = [
     {
         name: "Home",
@@ -39,7 +41,7 @@ const Navbar = () => {
     const [isFixed, setIsFixed] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [navBg, setNavBg] = useState('bg-[#15151580]'); 
-    const user = false; // TODO: check if user is logged in
+    const user = true; // TODO: check if user is logged in
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -83,6 +85,10 @@ const Navbar = () => {
             setNavBg(`${isHome || location.pathname === '/' ? 'bg-transparent' : 'bg-white dark:bg-black'} dark:text-white text-white`);
         }
     }, [scrollPosition, isHome, location.pathname]);
+
+    const handelLogout = () => {
+        console.log('Logout out');
+    }
 
     return (
         <nav className="">
@@ -152,6 +158,15 @@ const Navbar = () => {
                                         </NavLink>
                                     </li>
                                 )}
+                                {
+                                    // Le code qui permet d'afficher la photo à gauche de l'utilisateur connecté dans le dashboard
+                                    user && <li>
+                                        <img src={photoURL} alt="" className='h-[40px] rounded-full w-[40px]' />
+                                    </li>
+                                }
+                                {
+                                    user && <li><NavLink onClick={handelLogout} className={'font-bold px-3 py-2 bg-secondary text-white'}>Logout</NavLink></li>
+                                }
                                 {/* Toggle couleur */}
                                 <li>
                                     <ThemeProvider theme={theme}>
