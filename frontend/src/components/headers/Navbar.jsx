@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
+import { motion } from 'framer-motion';
 
 import photoURL from '../../assets/home/girl.jpg';  // L'importation de la photo de profil dashboard de l'utilisateur
 
@@ -93,7 +94,7 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="">
+        <motion.nav className={`${isHome ? navBg : "bg-white dark:bg-black backdrop-blur-2xl"} ${isFixed ? 'static' : 'fixed'} top-0 transition-colors duration-500 ease-in-out w-full z-10`}>
             {/* le code du navbar */}
             <div className='lg:w-[80%] mx-auto sm:px-4 lg:px-6'>
                 <div className='px-4 py-4 flex items-center justify-between'>
@@ -190,7 +191,7 @@ const Navbar = () => {
                     </div>
                 </div>
             </div>
-        </nav>
+        </motion.nav>
     );
 };
 
