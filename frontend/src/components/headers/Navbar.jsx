@@ -94,16 +94,22 @@ const Navbar = () => {
     }
 
     return (
-        <motion.nav className={`${isHome ? navBg : "bg-white dark:bg-black backdrop-blur-2xl"} ${isFixed ? 'static' : 'fixed'} top-0 transition-colors duration-500 ease-in-out w-full z-10`}>
+        <motion.nav
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className={`${isHome ? navBg : "bg-white dark:bg-black backdrop-blur-2xl"} ${isFixed ? 'static' : 'fixed'} top-0 transition-colors duration-500 ease-in-out w-full z-10`}>
             {/* le code du navbar */}
             <div className='lg:w-[80%] mx-auto sm:px-4 lg:px-6'>
                 <div className='px-4 py-4 flex items-center justify-between'>
                     {/* Logo container */}
-                    <div>
-                        <h1 className='text-2xl inline-flex gap-3 items-center font-bold'>
-                            IntraConnect <img src="/yoga-logo.png" alt="" className='w-8 h-8' />
-                        </h1>
-                        <p className='font-bold text-[13px] tracking-[8px]'>Explore Intranet</p>
+                    <div onClick={() => navigate('/')} className='flex-shrink-0 cursor-pointer pl-7 md:p-0 flex items-center'>
+                        <div>
+                            <h1 className='text-2xl inline-flex gap-3 items-center font-bold'>
+                                IntraConnect <img src="/yoga-logo.png" alt="" className='w-8 h-8' />
+                            </h1>
+                            <p className='font-bold text-[13px] tracking-[8px]'>Explore Intranet</p>
+                        </div>
                     </div>
 
                     {/* mobile menu icons permet de basculer le menu en version mobile */}
@@ -120,6 +126,7 @@ const Navbar = () => {
                                     <li key={link.route}>
                                         <NavLink
                                             to={link.route}
+                                            style={{whiteSpace: 'nowrap'}}
                                             className={({ isActive }) =>
                                                 `font-bold ${isActive ? 'text-secondary' : `${navBg.includes('bg-transparent') ? 'text-white' : 'text-black dark:text-white'}`} hover:text-secondary duration-300`
                                             }
