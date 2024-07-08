@@ -1,9 +1,12 @@
-import React from 'react'
+import React from 'react';
+import HeroContainer from './Hero/HeroContainer';
 
 const Home = () => {
   return (
-    <div>Home</div>
-  )
-}
+    <div>
+      <HeroContainer />
+    </div>
+  );
+};
 
-export default Home
+export default Home;
