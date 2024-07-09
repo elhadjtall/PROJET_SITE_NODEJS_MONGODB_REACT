@@ -108,3 +108,5 @@ Les fichier Hero.jsx et Hero2.jsx sont les codes qui répresentent les images du
 
 Après ces deux fichiers, on se tourne vers le fichier Home.jsx pour cela on as besoin de creer un dossier et un fichier galery dans le dossier Home
 Nb : chaque fois que vous apporter une image, il faut l'importer 
+
+Ensuite chaque bloc represente un fichier et qui est appeler dans le Home.jsx
