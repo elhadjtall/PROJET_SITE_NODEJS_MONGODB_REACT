@@ -101,3 +101,7 @@ Explication des fonction css : justify-between permet d'alargir les espaces des 
 
 Il faut noter que dans le dossier Pages/Home/Hero se sont les fichier de la page d'acceuil et le carousel
 Pour le faire on utiliser la bibliothèque swiper
+
+Dans le fichier HomeContainer c'est là est defini le swipper
+
+Les fichier Hero.jsx et Hero2.jsx sont les codes qui répresentent les images du backroung

@@ -17,7 +17,7 @@ const Hero = () => {
               </div>
               <div className='flex flex-wrap items-center gap-5'>
                 <button className='px-7 py-3 rounded-lg bg-secondary font-bold uppercase'>Join TOday</button>
-                <button className='px-7 py-3 rounded-lg border font-bold uppercase'>Wiew Course</button>
+                <button className='px-7 py-3 rounded-lg border hover:bg-secondary font-bold uppercase'>Wiew Course</button>
               </div>
             </div>
           </div>

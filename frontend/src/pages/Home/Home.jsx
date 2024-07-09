@@ -3,9 +3,13 @@ import HeroContainer from './Hero/HeroContainer';
 
 const Home = () => {
   return (
-    <div>
+    <section>
       <HeroContainer />
-    </div>
+
+      <div>
+        
+      </div>
+    </section>
   );
 };
 

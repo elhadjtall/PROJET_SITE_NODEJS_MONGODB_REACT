@@ -26,7 +26,7 @@ const HeroContainer = () => {
         className="mySwiper"
         loop={true}
         autoplay={{
-          delay: 2500, // Adjusted delay for better visibility
+          delay: 3000, // Adjusted delay for better visibility
           disableOnInteraction: false,
         }}
       >
