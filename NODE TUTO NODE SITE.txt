@@ -110,3 +110,5 @@ Après ces deux fichiers, on se tourne vers le fichier Home.jsx pour cela on as 
 Nb : chaque fois que vous apporter une image, il faut l'importer 
 
 Ensuite chaque bloc represente un fichier et qui est appeler dans le Home.jsx
+
+On arrete le serveur du frontend, on relanche celui du backend,
