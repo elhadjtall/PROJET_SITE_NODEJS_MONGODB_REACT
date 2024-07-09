@@ -8,24 +8,25 @@ const Gallary = () => {
         <div className='mb-16'>
             <h1 className='text-5xl font-bold text-center'>Our Gallary</h1>
         </div>
-        <div>
+        {/* Images container */}
+        <div className='md:grid grid-cols-2 items-center justify-center gap-4'> {/* c'est le div principal qui contient toutes les images */}
             <div className='mb-4 md:mb-0'>
-                <img src={image1} alt="" className='md:h-[720px] w-full mx-auto' />
+                <img src={image1} alt="" className='md:h-[720px] w-full mx-auto rounded-sm' />
             </div>
-            <div>
+            <div className='gap-4 grid grid-cols-2 items-start'>
                 <div>
-                    <img src={image2} alt="" className='md:h-[350px]'/>
+                    <img src={image2} alt="" className='md:h-[350px] rounded-sm'/>
                 </div>
                 <div>
-                    <img src={image2} alt="" className='md:h-[350px]'/>
+                    <img src={image2} alt="" className='md:h-[350px] rounded-sm'/>
                 </div>
                 <div>
-                    <img src={image2} alt="" className='md:h-[350px]'/>
+                    <img src={image2} alt="" className='md:h-[350px] rounded-sm'/>
                 </div>
                 <div>
-                    <img src={image2} alt="" className='md:h-[350px]'/>
+                    <img src={image2} alt="" className='md:h-[350px] rounded-sm'/>
                 </div>
-                
+
             </div>
         </div>
 
