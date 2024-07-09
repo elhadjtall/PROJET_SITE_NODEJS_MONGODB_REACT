@@ -112,3 +112,7 @@ Nb : chaque fois que vous apporter une image, il faut l'importer
 Ensuite chaque bloc represente un fichier et qui est appeler dans le Home.jsx
 
 On arrete le serveur du frontend, on relanche celui du backend,
+
+Ici on utilise le Axios pour envoyer les données du backend
+Dans le fichier on ajoute les axios interceptors et requetes
+Puis dans le fichier PopularClass on ajoute les Axios voir le code
