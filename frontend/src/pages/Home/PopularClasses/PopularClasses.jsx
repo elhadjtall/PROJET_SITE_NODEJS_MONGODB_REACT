@@ -1,10 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useAxiosFetch from '../../../hooks/useAxiosFetch'
+import axios from 'axios';
 
 const PopularClasses = () => {
     // On ajoute les Axios
     const useAxiosFetch = useAxiosFetch();
     const [classes, setClasses] = useState([]);
+    useEffect(() => {
+      const fetchClasses = async () => {
+        const response = await useAxiosFetch.get('/classes');
+        console.log(response)
+      }
+      fetchClasses()
+    }), []
   return (
     <div className='md:w-[80%] mx-auto my-28'>
         <div>
