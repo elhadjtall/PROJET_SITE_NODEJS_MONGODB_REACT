@@ -116,3 +116,5 @@ On arrete le serveur du frontend, on relanche celui du backend,
 Ici on utilise le Axios pour envoyer les données du backend
 Dans le fichier on ajoute les axios interceptors et requetes
 Puis dans le fichier PopularClass on ajoute les Axios voir le code
+
+On creer un fichier Card dans le dossier PopularClass Card.jsx
