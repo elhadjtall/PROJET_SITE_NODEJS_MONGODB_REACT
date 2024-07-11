@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useAxiosFetch from '../../../hooks/useAxiosFetch';
+import Card from './Card';  // Assurez-vous que le chemin est correct
 
 const PopularClasses = () => {
     const axiosFetch = useAxiosFetch();
@@ -32,9 +33,9 @@ const PopularClasses = () => {
                     </p>
                 </div>
             </div>
-            <div>
+            <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
                 {
-                    classes.map((item, index) => <div key={index}>{item.name}</div>)
+                    classes.map((item, index) => <Card key={index} item={item} />)
                 }
             </div>
         </div>

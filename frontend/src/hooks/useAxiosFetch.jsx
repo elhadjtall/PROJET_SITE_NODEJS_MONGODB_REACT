@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import axios from 'axios';
 
 const useAxiosFetch = () => {
-    const axiosInstance = axios.create({
+    const axiosInstance = useMemo(() => axios.create({
         baseURL: 'http://localhost:3000/'
-    });
+    }), []);
 
     useEffect(() => {
         const requestInterceptor = axiosInstance.interceptors.request.use(

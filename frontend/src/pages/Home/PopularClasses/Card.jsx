@@ -1,11 +1,13 @@
-import React from 'react'
+import React from 'react';
+// import './Card.css';
 
-const Card = ( {item}) => {
+const Card = ({ item }) => {
+    return (
+        <div className="card">
+            <h2 className="card-title">{item.title}</h2>
+            <p className="card-description">{item.description}</p>
+        </div>
+    );
+};
 
-    console.log(item)
-  return (
-    <div>Card</div>
-  )
-}
-
-export default Card
+export default Card;
