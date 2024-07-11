@@ -4,8 +4,9 @@ import React from 'react';
 const Card = ({ item }) => {
     return (
         <div className="card">
-            <h2 className="card-title">{item.title}</h2>
-            <p className="card-description">{item.description}</p>
+            Card
+            {/* <h2 className="card-title">{item.title}</h2>
+            <p className="card-description">{item.description}</p> */}
         </div>
     );
 };
