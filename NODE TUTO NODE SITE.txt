@@ -120,3 +120,4 @@ Puis dans le fichier PopularClass on ajoute les Axios voir le code
 On creer un fichier Card dans le dossier PopularClass Card.jsx, 
 Nb : pour afficher les contenue des API (data), on as utiliser Axios dont on as creer un fichier appeler useAxiosFetch.jsx(voir le code)
 Et dans le PopularClass.jsx 
+Dans le card, on gere la selection de chaque elements en utilisant le id

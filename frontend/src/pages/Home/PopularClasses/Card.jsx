@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 // import './Card.css';
 
 const Card = ({ item }) => {
@@ -13,7 +14,11 @@ const Card = ({ item }) => {
                 <p className="text-gray-600 mb-2">{availableSeats} available seats</p>
                 <p className="text-gray-600 mb-2">Price: {price}</p>
                 <p className="text-gray-600 mb-2">Total Students: {totalEnrolled}</p>
-                <button className="bg-secondary text-white p-2 rounded-lg">View Details</button>
+
+                {/* La gestion de la selection des elements en utilisant le id du data dans la base de donnée, lorsqu'on clique sur le bouton selected */}
+                <Link to={`/classes/${_id}`} className='text-center mt-2'>
+                    <button className="px-2 w-full py-1 bg-secondary text-white rounded-xl font-bold mt-2">Selected</button>
+                </Link>
                 
             </div>
         </div>
