@@ -117,4 +117,6 @@ Ici on utilise le Axios pour envoyer les données du backend
 Dans le fichier on ajoute les axios interceptors et requetes
 Puis dans le fichier PopularClass on ajoute les Axios voir le code
 
-On creer un fichier Card dans le dossier PopularClass Card.jsx
+On creer un fichier Card dans le dossier PopularClass Card.jsx, 
+Nb : pour afficher les contenue des API (data), on as utiliser Axios dont on as creer un fichier appeler useAxiosFetch.jsx(voir le code)
+Et dans le PopularClass.jsx 
