@@ -55,14 +55,6 @@ async function run() {
     const enrolledCollections = database.collection("enrolled");
     const appliedCollections = database.collection("applied");
 
-    // Token Endpoint
-    app.post('/api/set-token', async (req, res) => {
-      const user = req.body;
-      const token = jwt.sign(user, process.env.ASSESS_SECRET, { 
-        expiresIn: '24h' });
-      res.send({ token });
-    });
-
     // widdleware for admin and instructor
     // Le widdleware pour l'admin et l'instructor
     const verifyAdmin = async (req, res, next) => {
@@ -96,6 +88,14 @@ async function run() {
       const newUser = req.body;
       const result = await userCollections.insertOne(newUser);
       res.send(result);
+    });
+
+     // Token Endpoint
+     app.post('/api/set-token', async (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ASSESS_SECRET, { 
+        expiresIn: '24h' });
+      res.send({ token });
     });
 
     app.get('/users', async (req, res) => {
@@ -151,6 +151,7 @@ async function run() {
       res.send(result);
     });
 
+    // GET ALL CLASSES
     app.get('/classes', async (req, res) => {
       const query = { status: "approved" };
       const result = await classesCollections.find(query).toArray();
@@ -169,7 +170,8 @@ async function run() {
       res.send(result);
     });
 
-    app.put('/change-status', verifyJWT, verifyAdmin, async (req, res) => {
+    // Change Status of a class
+    app.put('/change-status/:id', verifyJWT, verifyAdmin, async (req, res) => {
       const id = req.body.id;
       const status = req.body.status;
       const reason = req.body.reason;
@@ -185,23 +187,21 @@ async function run() {
       res.send(result);
     });
 
+    // GET APPROVED CLASSES
     app.get('/approved-classes', async (req, res) => {
       const query = { status: "approved" };
       const result = await classesCollections.find(query).toArray();
       res.send(result);
     });
 
-    app.get('/classes/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await classesCollections.findOne(query);
-      if (result) {
-        res.send(result);
-      } else {
-        res.status(404).send({ message: 'Class not found' });
-      }
+    // GET ALL Instructors
+    app.get('/instructors', async (req, res) => {
+      const query = { role: "instructor" };
+      const result = await userCollections.find(query).toArray();
+      res.send(result);
     });
-
+    
+    // Update Class
     app.put('/update-class/:id', verifyJWT, verifyInstructor, async (req, res) => {
       const id = req.params.id;
       const updateClass = req.body;
@@ -220,6 +220,20 @@ async function run() {
       const result = await classesCollections.updateOne(filter, updateDoc, options);
       res.send(result);
     });
+
+    // Get single class by id for details page
+    app.get('/classes/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await classesCollections.findOne(query);
+      if (result) {
+        res.send(result);
+      } else {
+        res.status(404).send({ message: 'Class not found' });
+      }
+    });
+
+    // ! CART ROUTES
 
     // Cart Routes
     app.post('/add-to-cart', verifyJWT, async (req, res) => {
@@ -269,60 +283,170 @@ async function run() {
         clientSecret: paymentIntent.client_secret,
       });
     });
-
-    app.post('/payment-info', async (req, res) => {
+    
+    // PAYMANT INFO
+    app.post('/payment-info', verifyJWT, async (req, res) => {
       const paymentInfo = req.body;
-      const classesId = paymentInfo.classId.map(id => new ObjectId(id));
-      const userMail = paymentInfo.userMail;
+      const classesId = paymentInfo.classesId;
+      const userEmail = paymentInfo.userEmail;
       const singleClassId = req.query.classId;
-
       let query;
+      // const query = { classId: { $in: classesId } };
       if (singleClassId) {
-        query = { classId: singleClassId, userMail: userMail };
+          query = { classId: singleClassId, userMail: userEmail };
       } else {
-        query = { classId: { $in: classesId } };
+          query = { classId: { $in: classesId } };
       }
+      const classesQuery = { _id: { $in: classesId.map(id => new ObjectId(id)) } }
+      const classes = await classesCollection.find(classesQuery).toArray();
+      const newEnrolledData = {
+          userEmail: userEmail,
+          classesId: classesId.map(id => new ObjectId(id)),
+          transactionId: paymentInfo.transactionId,
+      }
+      const updatedDoc = {
+          $set: {
+              totalEnrolled: classes.reduce((total, current) => total + current.totalEnrolled, 0) + 1 || 0,
+              availableSeats: classes.reduce((total, current) => total + current.availableSeats, 0) - 1 || 0,
+          }
+      }
+      // const updatedInstructor = await userCollection.find()
+      const updatedResult = await classesCollection.updateMany(classesQuery, updatedDoc, { upsert: true });
+      const enrolledResult = await enrolledCollection.insertOne(newEnrolledData);
+      const deletedResult = await cartCollection.deleteMany(query);
+      const paymentResult = await paymentCollection.insertOne(paymentInfo);
+      res.send({ paymentResult, deletedResult, enrolledResult, updatedResult });
+  });
 
-      const classesQuery = { _id: { $in: classesId } };
-      const classes = await classesCollections.find(classesQuery).toArray();
-
-      const options = { upsert: true };
-      const updateEnrolled = {
-        $set: {
-          status: 'enrolled'
-        }
-      };
-
-      const payments = await paymentCollections.insertOne(paymentInfo);
-      await cartCollections.deleteMany(query);
-      await classesCollections.updateMany(classesQuery, { $inc: { availableSeats: -1, enrolledStudents: 1 } });
-      await enrolledCollections.updateOne({ email: userMail }, { $addToSet: { classesId: { $each: classesId } } }, options);
-
-      res.send({ payments, classes });
-    });
-
-    app.get('/payment-info/:email', verifyJWT, verifyInstructor, async (req, res) => {
+    // Get Payment Info email  
+    app.get('/payment-history/:email', verifyJWT, verifyInstructor, async (req, res) => {
       const email = req.params.email;
       const query = { userMail: email };
       const result = await paymentCollections.find(query).toArray();
       res.send(result);
     });
 
-    app.get('/enrolled-classes/:email', async (req, res) => {
-      const email = req.params.email;
-      const query = { email: email };
-      const projection = { classesId: 1, _id: 0 };
-      const result = await enrolledCollections.findOne(query, { projection: projection });
+    // Payement history lenght email
 
-      if (result && result.classesId) {
-        const classIds = result.classesId.map(id => new ObjectId(id));
-        const classQuery = { _id: { $in: classIds } };
-        const enrolledClasses = await classesCollections.find(classQuery).toArray();
-        res.send(enrolledClasses);
-      } else {
-        res.send([]);
-      }
+    app.get('/payment-history-length/:email', verifyJWT, verifyInstructor, async (req, res) => {
+      const email = req.params.email;
+      const query = { userMail: email };
+      const total = await paymentCollections.countDocuments(query);
+      res.send({ total});
     });
+
+
+
+    app.get('/popular_classes', async (req, res) => {
+      const result = await classesCollection.find().sort({ totalEnrolled: -1 }).limit(6).toArray();
+      res.send(result);
+  })
+
+
+  app.get('/popular-instructors', async (req, res) => {
+      const pipeline = [
+          {
+              $group: {
+                  _id: "$instructorEmail",
+                  totalEnrolled: { $sum: "$totalEnrolled" },
+              }
+          },
+          {
+              $lookup: {
+                  from: "users",
+                  localField: "_id",
+                  foreignField: "email",
+                  as: "instructor"
+              }
+          },
+          {
+              $project: {
+                  _id: 0,
+                  instructor: {
+                      $arrayElemAt: ["$instructor", 0]
+                  },
+                  totalEnrolled: 1
+              }
+          },
+          {
+              $sort: {
+                  totalEnrolled: -1
+              }
+          },
+          {
+              $limit: 6
+          }
+      ]
+      const result = await classesCollection.aggregate(pipeline).toArray();
+      res.send(result);
+
+  });
+
+  // Admins stats 
+  app.get('/admin-stats', verifyJWT, verifyAdmin, async (req, res) => {
+    // Get approved classes and pending classes and instructors 
+    const approvedClasses = (await classesCollection.find({ status: 'approved' }).toArray()).length;
+    const pendingClasses = (await classesCollection.find({ status: 'pending' }).toArray()).length;
+    const instructors = (await userCollection.find({ role: 'instructor' }).toArray()).length;
+    const totalClasses = (await classesCollection.find().toArray()).length;
+    const totalEnrolled = (await enrolledCollection.find().toArray()).length;
+    // const totalRevenue = await paymentCollection.find().toArray();
+    // const totalRevenueAmount = totalRevenue.reduce((total, current) => total + parseInt(current.price), 0);
+    const result = {
+        approvedClasses,
+        pendingClasses,
+        instructors,
+        totalClasses,
+        totalEnrolled,
+        // totalRevenueAmount
+    }
+    res.send(result);
+
+});
+
+
+app.get('/enrolled-classes/:email', verifyJWT, async (req, res) => {
+  const email = req.params.email;
+  const query = { userEmail: email };
+  const pipeline = [
+      {
+          $match: query
+      },
+      {
+          $lookup: {
+              from: "classes",
+              localField: "classesId",
+              foreignField: "_id",
+              as: "classes"
+          }
+      },
+      {
+          $unwind: "$classes"
+      },
+      {
+          $lookup: {
+              from: "users",
+              localField: "classes.instructorEmail",
+              foreignField: "email",
+              as: "instructor"
+          }
+      },
+      {
+          $project: {
+              _id: 0,
+              classes: 1,
+              instructor: {
+                  $arrayElemAt: ["$instructor", 0]
+              }
+          }
+      }
+
+  ]
+  const result = await enrolledCollection.aggregate(pipeline).toArray();
+  // const result = await enrolledCollection.find(query).toArray();
+  res.send(result);
+})
+
 
     // Verification des rôles
     const verifyRole = (role) => {

@@ -121,3 +121,13 @@ On creer un fichier Card dans le dossier PopularClass Card.jsx,
 Nb : pour afficher les contenue des API (data), on as utiliser Axios dont on as creer un fichier appeler useAxiosFetch.jsx(voir le code)
 Et dans le PopularClass.jsx 
 Dans le card, on gere la selection de chaque elements en utilisant le id
+Dans le PopularClass.jsx et le code d'affichage des card, on ajoute une fonction slice pour compter le nombre de card
+
+ON creer un dossier appeler : PopularTeacher et un fichier PopularTeacher.jsx
+
+Dans le fichier PopularTeacher, on recupere les information Instructor du backend, pour cela on ouvre dossier backend 
+
+
+
+
+NB: Toutes les informations afficher dans le frontend sont déjà defini dans le backend
