@@ -338,7 +338,7 @@ async function run() {
 
 
     app.get('/popular_classes', async (req, res) => {
-      const result = await classesCollection.find().sort({ totalEnrolled: -1 }).limit(6).toArray();
+      const result = await classesCollections.find().sort({ totalEnrolled: -1 }).limit(6).toArray();
       res.send(result);
   })
 
@@ -377,7 +377,7 @@ async function run() {
               $limit: 6
           }
       ]
-      const result = await classesCollection.aggregate(pipeline).toArray();
+      const result = await classesCollections.aggregate(pipeline).toArray();
       res.send(result);
 
   });
@@ -442,7 +442,7 @@ app.get('/enrolled-classes/:email', verifyJWT, async (req, res) => {
       }
 
   ]
-  const result = await enrolledCollection.aggregate(pipeline).toArray();
+  const result = await enrolledCollections.aggregate(pipeline).toArray();
   // const result = await enrolledCollection.find(query).toArray();
   res.send(result);
 })

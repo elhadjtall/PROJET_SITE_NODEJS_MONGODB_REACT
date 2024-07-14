@@ -131,3 +131,7 @@ Dans le fichier PopularTeacher, on recupere les information Instructor du backen
 
 
 NB: Toutes les informations afficher dans le frontend sont déjà defini dans le backend
+
+Pour cela on ouvre la base de donnée MongoDB, on creer un user voir le backend du backend userCollection
+Dans la base de donnée on clique Create a database, on met le nom de base et userCollection, ensuite on creer un fichier dans le dosser backend appeler users.json(je copier le code sur son git)
+Puis on l'insert à travers la base de donnée.
