@@ -7,18 +7,14 @@ const PopularTeacher = () => {
     const axiosFetch = useAxiosFetch();
 
     useEffect(() => {
-        const fetchInstructors = async () => {
-            try {
-                const response = await axiosFetch.get('/instructors');
-                setInstructors(response.data);
-                console.log(response);
-            } catch (error) {
-                console.error("Error fetching instructors:", error);
-            }
-        };
+        axiosFetch.get('/popular-instructors').then((data) => {
+            setInstructors(data.data);
+        }).catch((err) => {
+            console.error(err)
+        })
+    }, []);
 
-        fetchInstructors();
-    }, [axiosFetch]);
+    console.log(instructors)
 
     return (
         <div className='md:w-[80%] mx-auto my-28'> {/* c'est le div principal qui contient toutes les images */}
@@ -36,9 +32,7 @@ const PopularTeacher = () => {
             </div>
             {/* Affichage des images et Cards */}
             <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
-                {instructors.slice(0, 6).map((item, index) => (
-                    <Card key={index} item={item} />
-                ))}
+                
             </div>
         </div>
     );
