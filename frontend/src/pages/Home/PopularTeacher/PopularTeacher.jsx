@@ -30,10 +30,17 @@ const PopularTeacher = () => {
                     </p>
                 </div>
             </div>
-            {/* Affichage des images et Cards */}
-            <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
-                
-            </div>
+            {instructors && (
+                <div>
+                    {instructors.map((instructor, i) => (
+                        <div key={i}>
+                            <div>
+                                <img src={instructor?.photoUrl} alt={`Instructor ${i}`} />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
