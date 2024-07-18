@@ -139,3 +139,6 @@ Dans la base de donnée MongoDB, il faut creer le users dans le nom de la base d
 
 Une fois fini nous avons afficher les images qui se trouve dans le users.json du backend.
 Mais il y'a un souci par rapport à l'Instructor du backend, pour cela il faut ajouter le code $match(voir le code)
+
+Pour faire l'Instructor du Navbar, il faut copier le code du PopularTeacher et le coller dans le fichier Instructor
+NB: le Point d'interogation (?) permet de verifier si la classe existe pour y acceder

@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import Home from "../pages/Home/Home";
+import Instructors from "../pages/Instructors/Instructors";
 
 export const router = createBrowserRouter([
     {
@@ -13,7 +14,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/instructors",
-                element: <div>Instructors</div>,
+                element: <Instructors />, // Utilisation du composant Instructors
             },
             {
                 path: "/classes",
