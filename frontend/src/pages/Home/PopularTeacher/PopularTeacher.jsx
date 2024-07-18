@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useAxiosFetch from '../../../hooks/useAxiosFetch';
+import img from "../../../assets/home/girl.jpg";
 // import Card from './Card'; // Assurez-vous que le chemin est correct
 
 const PopularTeacher = () => {
@@ -32,10 +33,10 @@ const PopularTeacher = () => {
             </div>
             {instructors && (
                 <div>
-                    {instructors.map((instructor, i) => (
-                        <div key={i}>
+                    {instructors?.map((instructor, i) => (
+                        <div>
                             <div>
-                                <img src={instructor?.photoUrl} alt={`Instructor ${i}`} />
+                                <img src={instructor?.instructor?.photoUrl || `${img}`} alt={`Instructor ${i}`} />
                             </div>
                         </div>
                     ))}
