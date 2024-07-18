@@ -33,11 +33,16 @@ const PopularTeacher = () => {
             </div>
             {instructors && (
                 <div className='grid mb-28 md:grid-cols-2 lg:grid-cols-4 w-[90%] gap-4 mx-auto'>
-                    {instructors?.slice(0, 4).map((instructor, i) => (
+                    {instructors?.slice(0, 6).map((instructor, i) => (
                         <div className='flex dark:text-white hover:-translate-y-2 duration-200 cursor-pointer flex-col shadow-md py-8 px-10 md:px-8 rounded-md'>
                             <div className='flex-col flex gap-6 md:gap-8'>
                                 <img className='rounded-full border-4 border-gray-300 h-24 w-24 mx-auto ' //Ce code css permet de centrer l'image et la bordurer puis la redimentionner
                                  src={instructor?.instructor?.photoUrl || `${img}`} alt="" />
+                            </div>
+                            <div className='flex flex-col text-center '>
+                                <p className='font-medium text-lg dark:text-white text-gray-800'>{instructor?.instructor?.name}</p>
+                                <p className='text-gray-500 whitespace-nowrap'>Instructor</p>
+                                <p className='text-gray-500 mb-4 whitespace-nowrap'>Total Students: {instructor?.totalEnrolled}</p>
                             </div>
                             
                         </div>
