@@ -19,12 +19,9 @@ const Classes = () => {
   
   return (
     <div>
-      <h1>Classes</h1>
-      {/* <ul>
-        {classes.map((cls, index) => (
-          <li key={index}>{cls.name}</li> // Ajustez en fonction des données
-        ))}
-      </ul> */}
+      <div className='mt-20 pt-3'>
+        <h1 className="text-5xl font-bold text-center">Classes</h1>
+      </div>
     </div>
   );
 }
