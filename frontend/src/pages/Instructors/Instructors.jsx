@@ -39,8 +39,7 @@ const Instructors = () => {
                 <img
                   className='rounded-full border-4 border-gray-300 h-24 w-24 mx-auto'
                   src={instructor?.photoUrl || img}
-                  alt=''
-                />
+                  alt=''/>
               </div>
               <div className='flex flex-col text-center'>
                 <p className='font-medium text-lg dark:text-white text-gray-800'>{instructor?.instructor?.name}</p>
