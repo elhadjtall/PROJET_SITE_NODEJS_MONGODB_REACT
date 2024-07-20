@@ -3,7 +3,12 @@ import useAxiosFetch from '../../hooks/useAxiosFetch';
 
 const Classes = () => {
   const [classes, setClasses] = useState([]);
+  const [hoveredCard, setHoveredCard] = useState(null);
   const axiosFetch = useAxiosFetch();
+
+  const handleCardHover = (id) => {
+    setHoveredCard(id);
+  };
 
   useEffect(() => {
     axiosFetch.get('/classes')
@@ -13,7 +18,7 @@ const Classes = () => {
       .catch(err => {
         console.log(err);
       });
-  }, [axiosFetch]); // Ajoutez axiosFetch comme dépendance si nécessaire
+  }, []); // Ajoutez axiosFetch comme dépendance si nécessaire
 
   console.log(classes);
   
